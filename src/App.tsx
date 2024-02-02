@@ -1,13 +1,11 @@
-import { RouterProvider } from 'react-router-dom';
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import router from './router/Router';
+import { RouterProvider } from "react-router-dom";
+import router from "./router/Router";
+import { Amplify } from "aws-amplify";
+import config from "./amplifyconfiguration.json";
+Amplify.configure(config);
 
 function App() {
-  return (
-    <RouterProvider router={router}/>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
