@@ -1,6 +1,6 @@
 {
   "auth": {
-    "keyreerfrontend8889e8fd": {
+    "keyreerfrontend52a119ae": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -8,42 +8,36 @@
       "serviceType": "imported"
     }
   },
-  "hosting": {
-    "S3AndCloudFront": {
-      "providerPlugin": "awscloudformation",
-      "service": "S3AndCloudFront"
-    }
-  },
   "parameters": {
-    "AMPLIFY_auth_keyreerfrontend8889e8fd_nativeClientId": {
+    "AMPLIFY_auth_keyreerfrontend52a119ae_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "keyreerfrontend8889e8fd"
+          "resourceName": "keyreerfrontend52a119ae"
         }
       ]
     },
-    "AMPLIFY_auth_keyreerfrontend8889e8fd_userPoolId": {
+    "AMPLIFY_auth_keyreerfrontend52a119ae_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "keyreerfrontend8889e8fd"
+          "resourceName": "keyreerfrontend52a119ae"
         }
       ]
     },
-    "AMPLIFY_auth_keyreerfrontend8889e8fd_userPoolName": {
+    "AMPLIFY_auth_keyreerfrontend52a119ae_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "keyreerfrontend8889e8fd"
+          "resourceName": "keyreerfrontend52a119ae"
         }
       ]
     },
-    "AMPLIFY_auth_keyreerfrontend8889e8fd_webClientId": {
+    "AMPLIFY_auth_keyreerfrontend52a119ae_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "keyreerfrontend8889e8fd"
+          "resourceName": "keyreerfrontend52a119ae"
         }
       ]
     }
