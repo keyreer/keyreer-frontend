@@ -4,6 +4,7 @@ import { Authenticator } from "@aws-amplify/ui-react";
 import { View, Image, useTheme } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import logo from "../assets/logo.svg";
+import Keyword from "./Keyword";
 
 export default function Login() {
   const [jwtToken, setJwtToken] = useState<string>("");
@@ -45,13 +46,7 @@ export default function Login() {
       components={components}
     >
       {({ signOut, user }) => (
-        <main>
-          <h1>Hello {user?.username}</h1>
-          <h4>Your JWT token:</h4>
-          {jwtToken}
-          <br />
-          <button onClick={signOut}>Sign out</button>
-        </main>
+        <Keyword />
       )}
     </Authenticator>
   );
