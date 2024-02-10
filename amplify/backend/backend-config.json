@@ -1,4 +1,5 @@
 {
+  "api": {},
   "auth": {
     "keyreerfrontend52a119ae": {
       "customAuth": false,
@@ -6,6 +7,14 @@
       "providerPlugin": "awscloudformation",
       "service": "Cognito",
       "serviceType": "imported"
+    }
+  },
+  "function": {},
+  "hosting": {
+    "amplifyhosting": {
+      "lastPushTimeStamp": "2024-02-04T14:51:40.154Z",
+      "service": "amplifyhosting",
+      "type": "cicd"
     }
   },
   "parameters": {
@@ -40,6 +49,23 @@
           "resourceName": "keyreerfrontend52a119ae"
         }
       ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
     }
-  }
+  },
+  "storage": {}
 }

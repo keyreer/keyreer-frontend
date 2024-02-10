@@ -19,6 +19,12 @@
           "webClientId": "4r4q5ivvmar33cggissqj55dhb",
           "nativeClientId": "4r4q5ivvmar33cggissqj55dhb"
         }
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d111do0vacfdsb",
+          "type": "cicd"
+        }
       }
     }
   }
