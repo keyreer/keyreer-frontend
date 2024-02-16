@@ -10,30 +10,47 @@ export default function Keyword() {
 
   return (
     <>
-      <Grid container justifyContent="center" alignItems="center" style={{ height: '100vh' }}>
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        style={{ height: "100vh" }}
+      >
         <Grid item>
           <Autocomplete
             autoSelect
             multiple
             filterSelectedOptions
-            options={['tag1']}
+            options={["tag1"]}
             value={tags}
             open={false}
             freeSolo
             style={{ width: 300, height: 50 }}
-            renderInput={params => (
-              <TextField {...params} placeholder={'+'} label="Tags" variant="standard" inputProps={{...params.inputProps, maxLength: 20}} />
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder={"+"}
+                label="Tags"
+                variant="standard"
+                inputProps={{ ...params.inputProps, maxLength: 20 }}
+              />
             )}
-            renderTags={(value: string[], getTagProps) => value.map((option: string, index: number) => (
-              <Chip {...getTagProps({index})} key={index} color='primary' label={option} />
-            ))
+            renderTags={(value: string[], getTagProps) =>
+              value.map((option: string, index: number) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  key={index}
+                  color="primary"
+                  label={option}
+                />
+              ))
             }
             onChange={(e, newValue) => {
               handleChangeTags(newValue);
             }}
           />
-          </Grid>
+        </Grid>
       </Grid>
     </>
-  )
+  );
 }

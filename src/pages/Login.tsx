@@ -45,9 +45,7 @@ export default function Login() {
       signUpAttributes={["nickname"]}
       components={components}
     >
-      {({ signOut, user }) => (
-        <Keyword />
-      )}
+      {({ signOut, user }) => <Keyword />}
     </Authenticator>
   );
 }
