@@ -1,56 +1,88 @@
-import { Autocomplete, Chip, Grid, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Chip,
+  Container,
+  TextField,
+  Box,
+  Button,
+} from "@mui/material";
 import { useState } from "react";
 
 export default function Keyword() {
-  const [tags, setTags] = useState<string[]>([]);
+  const [keywords, setKeywords] = useState<string[]>([]);
 
-  const handleChangeTags = (newValue: string[]) => {
-    setTags(newValue);
+  const handleChangeKeywords = (newValue: string[]) => {
+    setKeywords(newValue);
   };
 
   return (
-    <>
-      <Grid
-        container
-        justifyContent="center"
+    <Container>
+      <Box
+        display="flex"
+        flexDirection="column"
         alignItems="center"
-        style={{ height: "100vh" }}
+        justifyContent="center"
+        style={{ height: "80vh" }}
       >
-        <Grid item>
+        <h1>/keywords</h1>
+        <Box maxWidth="450px" width="100%">
           <Autocomplete
-            autoSelect
             multiple
-            filterSelectedOptions
-            options={["tag1"]}
-            value={tags}
-            open={false}
+            options={[]}
+            value={keywords}
             freeSolo
-            style={{ width: 300, height: 50 }}
             renderInput={(params) => (
               <TextField
                 {...params}
                 placeholder={"+"}
-                label="Tags"
+                label="Add your keywords"
                 variant="standard"
-                inputProps={{ ...params.inputProps, maxLength: 20 }}
+                inputProps={{
+                  ...params.inputProps,
+                  maxLength: 20,
+                  sx: { paddingLeft: 10 },
+                }}
+                // 여기서 width와 height 스타일은 필요 없으므로 제거했습니다.
               />
             )}
-            renderTags={(value: string[], getTagProps) =>
-              value.map((option: string, index: number) => (
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
                 <Chip
                   {...getTagProps({ index })}
                   key={index}
+                  variant="outlined"
                   color="primary"
                   label={option}
+                  sx={{
+                    padding: 1,
+                    paddingBottom: 1.1,
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                    borderWidth: 2,
+                  }}
                 />
               ))
             }
             onChange={(e, newValue) => {
-              handleChangeTags(newValue);
+              handleChangeKeywords(newValue);
             }}
+            // Autocomplete에 직접 style을 적용하지 않고 Grid item의 width를 조절하여 너비를 설정합니다.
+            style={{ width: "100%" }}
           />
-        </Grid>
-      </Grid>
-    </>
+        </Box>
+        <Box maxWidth="450px" width="100%" marginTop="25px">
+          <Button
+            variant="contained"
+            size="large"
+            style={{ width: "100%" }}
+            onClick={() => {
+              console.log("button clicked");
+            }}
+          >
+            register
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 }
