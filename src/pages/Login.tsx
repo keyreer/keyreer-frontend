@@ -1,32 +1,19 @@
-import { fetchAuthSession } from "aws-amplify/auth";
-import { useEffect, useState } from "react";
-import { Authenticator } from "@aws-amplify/ui-react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { View, Image, useTheme } from "@aws-amplify/ui-react";
+import { Authenticator, WithAuthenticatorProps } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
+
 import logo from "../assets/logo.svg";
-import Keyword from "./Keyword";
+import Home from "./Home";
+// import { UserContextType } from "../types";
+// import { UserContext } from "../App";
 
 export default function Login() {
-  const [jwtToken, setJwtToken] = useState<string>("");
+  // const { setSignOut, setUser, user } =
+  //   useContext<UserContextType>(UserContext);
 
-  useEffect(() => {
-    const fetchJwtToken = async () => {
-      try {
-        // fetchAuthSession을 사용하여 세션 정보를 가져옵니다.
-        const { tokens } = await fetchAuthSession();
-        // idToken에서 JWT 토큰을 추출하여 상태에 저장합니다.
-        if (tokens && tokens.idToken) {
-          setJwtToken(tokens.idToken.toString());
-        } else {
-          console.error("No tokens found in the session.");
-        }
-      } catch (error) {
-        console.error("Error fetching JWT token: ", error);
-      }
-    };
-
-    fetchJwtToken();
-  }, []);
   const components = {
     Header() {
       const { tokens } = useTheme();
@@ -45,7 +32,9 @@ export default function Login() {
       signUpAttributes={["nickname"]}
       components={components}
     >
-      {({ signOut, user }) => <Keyword />}
+      {({ signOut, user }: WithAuthenticatorProps) => {
+        return <Home />;
+      }}
     </Authenticator>
   );
 }
