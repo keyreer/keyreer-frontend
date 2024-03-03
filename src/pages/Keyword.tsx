@@ -11,7 +11,14 @@ import {
   TextField,
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
+
 import Header from "../components/Header";
 
 import { fetchAuthSession } from "aws-amplify/auth";
@@ -19,6 +26,10 @@ import { fetchAuthSession } from "aws-amplify/auth";
 const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
   const [keywords, setKeywords] = useState<string[]>([]);
   const [jwtToken, setJwtToken] = useState<string>("");
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogContent, setDialogContent] = useState("");
+  const [dialogTitle, setDialogTitle] = useState("");
 
   const handleChangeKeywords = (newValue: string[]) => {
     setKeywords(newValue);
@@ -38,16 +49,18 @@ const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log("Success: ", data);
-        alert("Keywords successfully registered!");
+        setDialogTitle("Success");
+        setDialogContent("Keywords have been successfully registered.");
+        setOpenDialog(true);
       } else {
-        console.error("Failed to register keywords");
-        alert("Failed to register keywords.");
+        setDialogTitle("Failure");
+        setDialogContent("Failed to register keywords.");
+        setOpenDialog(true);
       }
     } catch (error) {
-      console.error("Error: ", error);
-      alert("An error occurred. Please try again.");
+      setDialogTitle("Error");
+      setDialogContent("An error occurred. Please try again.");
+      setOpenDialog(true);
     }
   };
 
@@ -109,7 +122,7 @@ const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
         justifyContent="center"
         style={{ height: "80vh" }}
       >
-        <h1>/keywords</h1>
+        <h1 style={{ marginBottom: "100px" }}>Edit your keywords!</h1>
         <Box maxWidth="450px" width="100%">
           <Autocomplete
             multiple
@@ -120,7 +133,7 @@ const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
               <TextField
                 {...params}
                 placeholder={"+"}
-                label="Add your keywords"
+                label="keywords"
                 variant="standard"
                 inputProps={{
                   ...params.inputProps,
@@ -138,12 +151,16 @@ const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
                   variant="outlined"
                   color="primary"
                   label={option}
+                  deleteIcon={<ClearIcon style={{ color: "black" }} />}
                   sx={{
                     padding: 1,
                     paddingBottom: 1.1,
                     fontWeight: "bold",
                     fontSize: "14px",
                     borderWidth: 2,
+                    borderRadius: "7px",
+                    color: "black",
+                    borderColor: "black",
                   }}
                 />
               ))
@@ -158,12 +175,21 @@ const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
           <Button
             variant="contained"
             size="large"
-            style={{ width: "100%" }}
+            style={{ width: "100%", backgroundColor: "black" }}
             onClick={handleRegisterClick}
           >
             register
           </Button>
         </Box>
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{dialogContent}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Container>
   );
