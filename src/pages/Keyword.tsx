@@ -18,31 +18,84 @@ import { fetchAuthSession } from "aws-amplify/auth";
 
 const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
   const [keywords, setKeywords] = useState<string[]>([]);
+  const [jwtToken, setJwtToken] = useState<string>("");
 
   const handleChangeKeywords = (newValue: string[]) => {
     setKeywords(newValue);
   };
 
-  const [jwtToken, setJwtToken] = useState<string>("");
+  const handleRegisterClick = async () => {
+    try {
+      const response = await fetch("https://api.keyreer.com/keywords", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: jwtToken,
+        },
+        body: JSON.stringify({
+          keywords: keywords,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success: ", data);
+        alert("Keywords successfully registered!");
+      } else {
+        console.error("Failed to register keywords");
+        alert("Failed to register keywords.");
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("An error occurred. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const fetchJwtToken = async () => {
       try {
-        // fetchAuthSession을 사용하여 세션 정보를 가져옵니다.
         const { tokens } = await fetchAuthSession();
-
-        // idToken에서 JWT 토큰을 추출하여 상태에 저장합니다.
         if (tokens && tokens.idToken) {
-          setJwtToken(tokens.idToken.toString());
+          const tokenStr = tokens.idToken.toString();
+          setJwtToken(tokenStr);
+          return tokenStr;
         } else {
           console.error("No tokens found in the session.");
+          return null;
         }
       } catch (error) {
         console.error("Error fetch ing JWT token: ", error);
+        return null;
       }
     };
 
-    fetchJwtToken();
+    const fetchKeywords = async (token: string) => {
+      try {
+        const response = await fetch("https://api.keyreer.com/keywords", {
+          method: "GET",
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.keywords) {
+            setKeywords(data.keywords);
+          }
+        } else {
+          console.error("Failed to fetch keywords");
+        }
+      } catch (error) {
+        console.error("Error fetching keywords: ", error);
+      }
+    };
+
+    fetchJwtToken().then((token) => {
+      if (token) {
+        fetchKeywords(token);
+      }
+    });
   }, []);
 
   return (
@@ -106,9 +159,7 @@ const Keyword = ({ signOut, user }: WithAuthenticatorProps) => {
             variant="contained"
             size="large"
             style={{ width: "100%" }}
-            onClick={() => {
-              console.log("button clicked");
-            }}
+            onClick={handleRegisterClick}
           >
             register
           </Button>
