@@ -1,137 +1,264 @@
+import React, { useEffect, useState, MouseEvent } from "react";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import axios from "axios";
 
-import { Container, Box, Grid } from "@mui/material";
+import { useTheme, styled } from "@mui/material/styles";
+import {
+  Container,
+  Box,
+  Grid,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TablePagination,
+  TableRow,
+  Paper,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import { tableCellClasses } from "@mui/material/TableCell";
+
+import {
+  FirstPage as FirstPageIcon,
+  KeyboardArrowLeft,
+  KeyboardArrowRight,
+  LastPage as LastPageIcon,
+} from "@mui/icons-material";
+
 import Header from "../components/Header";
+
+interface JobPost {
+  platform: string;
+  company: string;
+  title: string;
+  url: string;
+  inserted_at: string;
+}
+
+interface TablePaginationActionsProps {
+  count: number;
+  page: number;
+  rowsPerPage: number;
+  onPageChange: (event: MouseEvent<HTMLButtonElement>, newPage: number) => void;
+}
+
+function TablePaginationActions({
+  count,
+  page,
+  rowsPerPage,
+  onPageChange,
+}: TablePaginationActionsProps) {
+  const theme = useTheme();
+
+  const handleFirstPageButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onPageChange(event, 0);
+  };
+
+  const handleBackButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onPageChange(event, page - 1);
+  };
+
+  const handleNextButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onPageChange(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === "rtl" ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </Box>
+  );
+}
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
 
 export default function Home() {
   const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const [data, setData] = useState<JobPost[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("https://api.keyreer.com/posts");
+        setData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <Container>
       <Header user={user} signOut={signOut} />
-      <Box display="flex" alignItems="center" style={{ height: "80vh" }}>
-        <Grid
-          container
-          direction="column"
-          spacing={2}
-          alignItems="center"
-          style={{ textAlign: "center" }}
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        style={{ marginTop: "20px" }}
+      >
+        <Typography
+          style={{
+            textAlign: "left",
+            fontSize: "25px",
+            fontWeight: "bold",
+            margin: "40px",
+          }}
         >
-          <Grid item style={{ width: "100%", maxWidth: 500 }}>
-            <h1>Keyreer Home</h1>
-          </Grid>
-          <Grid
-            item
-            style={{
-              width: "100%",
-              maxWidth: 500,
-              marginTop: "10px",
-            }}
+          Newly udpated job postings
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table
+            aria-label="custom pagination table"
+            style={{ tableLayout: "fixed" }}
           >
-            <p>hello welcome to keyreer service!</p>
-          </Grid>
-        </Grid>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell style={{ width: "15%" }}>
+                  Platform
+                </StyledTableCell>
+                <StyledTableCell style={{ width: "20%" }}>
+                  Company
+                </StyledTableCell>
+                <StyledTableCell style={{ width: "50%" }}>
+                  Title
+                </StyledTableCell>
+                <StyledTableCell style={{ width: "15%" }}>
+                  Updated_at
+                </StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(rowsPerPage > 0
+                ? data.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                : data
+              ).map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell>{row.platform}</StyledTableCell>
+                  <StyledTableCell>{row.company}</StyledTableCell>
+                  <StyledTableCell
+                    onClick={() => window.open(row.url, "_blank")}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {row.title}
+                  </StyledTableCell>
+                  <StyledTableCell>{row.inserted_at}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, { label: "All", value: -1 }]}
+                  colSpan={3}
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
       </Box>
     </Container>
   );
 }
-
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-
-// const Header = ({ isLoggedIn, onLogout }) => {
-//   return (
-//     <div>
-//       {isLoggedIn ? (
-//         <button onClick={onLogout}>키워드 수정</button>
-//       ) : (
-//         <button onClick={() => window.location.href = '/login'}>로그인 하고 키워드로 알림 받기</button>
-//       )}
-//     </div>
-//   );
-// };
-
-// const PostRow = ({ post }) => {
-//   return (
-//     <tr>
-//       <td>{post.platform}</td>
-//       <td>{post.company}</td>
-//       <td>{post.title}</td>
-//       <td>{post.inserted_at}</td>
-//       <td><a href={post.url} target="_blank" rel="noopener noreferrer">보기</a></td>
-//     </tr>
-//   );
-// };
-
-// const PostTable = ({ posts }) => {
-//   return (
-//     <table>
-//       <thead>
-//         <tr>
-//           <th>플랫폼</th>
-//           <th>회사명</th>
-//           <th>공고 제목</th>
-//           <th>등록 날짜</th>
-//           <th>링크</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {posts.map((post, index) => (
-//           <PostRow key={index} post={post} />
-//         ))}
-//       </tbody>
-//     </table>
-//   );
-// };
-
-// const Pagination = ({ currentPage, setPage }) => {
-//   return (
-//     <div>
-//       {[...Array(5)].map((_, i) => (
-//         <button key={i} onClick={() => setPage(i + 1)} disabled={currentPage === i + 1}>
-//           {i + 1}
-//         </button>
-//       ))}
-//     </div>
-//   );
-// };
-
-// const App = () => {
-//   const [isLoggedIn, setLoggedIn] = useState(false);
-//   const [posts, setPosts] = useState([]);
-//   const [currentPage, setCurrentPage] = useState(1);
-
-//   const fetchPosts = async (page) => {
-//     try {
-//       const response = await axios.get(`https://api.keyreer.com/posts?page=${page}`);
-//       setPosts(response.data); // 가정: 응답 데이터가 배열 형태
-//     } catch (error) {
-//       console.error('공고를 불러오는 데 실패했습니다.', error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchPosts(currentPage);
-//   }, [currentPage]);
-
-//   const handleLogout = () => {
-//     // 토큰 삭제 및 로그아웃 처리
-//     setLoggedIn(false);
-//   };
-
-//   useEffect(() => {
-//     // 토큰 체크 및 상태 업데이트
-//     const token = localStorage.getItem('jwt');
-//     setLoggedIn(!!token);
-//   }, []);
-
-//   return (
-//     <div>
-//       <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
-//       <PostTable posts={posts} />
-//       <Pagination currentPage={currentPage} setPage={setCurrentPage} />
-//     </div>
-//   );
-// };
-
-// export default App;
