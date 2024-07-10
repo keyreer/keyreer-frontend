@@ -4,6 +4,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import { datadogRum } from '@datadog/browser-rum';
+import { datadogLogs } from '@datadog/browser-logs';
+
+datadogLogs.init({
+    clientToken: 'pub19f71f64d5682a70ba36a9ec703a3e74',
+    site: 'datadoghq.com',
+    forwardErrorsToLogs: true,
+    sessionSampleRate: 100
+});
 
 datadogRum.init({
     applicationId: '06f159b6-82df-41d8-bfd3-71b44fe6ad42',
@@ -21,6 +29,17 @@ datadogRum.init({
     trackResources: true,
     trackLongTasks: true,
     defaultPrivacyLevel: 'mask-user-input',
+    beforeSend: (event, context) => {
+      // collect a RUM resource's response headers
+      // if (event.type === 'resource' && event.resource.type === 'fetch') {
+      //     event.context.responseHeaders = Object.fromEntries(context.response.headers)
+      // }
+
+      datadogLogs.logger.info(JSON.stringify(event));
+      datadogLogs.logger.info(JSON.stringify(context));
+
+      return true
+  }
 });
 
 
