@@ -228,7 +228,11 @@ export default function Home() {
                   <StyledTableCell>{row.platform}</StyledTableCell>
                   <StyledTableCell>{row.company}</StyledTableCell>
                   <StyledTableCell
-                    onClick={() => window.open(row.url, "_blank")}
+                    // onClick={() => window.open(row.url, "_blank")}
+                    onClick={() => {
+                      throw new Error("Table cell click error for Datadog RUM test");
+                      // window.open(row.url, "_blank");
+                    }}
                     style={{ cursor: "pointer" }}
                   >
                     {row.title}
