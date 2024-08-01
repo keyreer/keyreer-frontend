@@ -236,9 +236,8 @@ export default function Home() {
                         );
                       } catch (error) {
                         console.error(error);
-                        window.open(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmWru8q17zpOzzzT1s475ZS_8fOL1GS0teSw&s",
-                          "_blank"
+                        alert(
+                          "An error occurred: Table cell click error for Datadog RUM test"
                         );
                       }
                     }}
