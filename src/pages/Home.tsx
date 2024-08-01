@@ -230,8 +230,17 @@ export default function Home() {
                   <StyledTableCell
                     // onClick={() => window.open(row.url, "_blank")}
                     onClick={() => {
-                      throw new Error("Table cell click error for Datadog RUM test");
-                      // window.open(row.url, "_blank");
+                      try {
+                        throw new Error(
+                          "Table cell click error for Datadog RUM test"
+                        );
+                      } catch (error) {
+                        console.error(error);
+                        window.open(
+                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmWru8q17zpOzzzT1s475ZS_8fOL1GS0teSw&s",
+                          "_blank"
+                        );
+                      }
                     }}
                     style={{ cursor: "pointer" }}
                   >
