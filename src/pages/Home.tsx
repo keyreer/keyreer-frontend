@@ -235,10 +235,10 @@ export default function Home() {
                   <StyledTableCell>{row.company}</StyledTableCell>
                   <StyledTableCell
                     onClick={() => {
+                      handleCellClick();
                       throw new Error(
                         "Table cell click error for Datadog RUM test"
                       );
-                      handleCellClick();
                     }}
                     style={{ cursor: "pointer" }}
                   >
