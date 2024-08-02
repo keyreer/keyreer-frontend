@@ -144,6 +144,7 @@ export default function Home() {
   const [data, setData] = useState<JobPost[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isTableVisible, setIsTableVisible] = useState(true); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -176,6 +177,10 @@ export default function Home() {
     setPage(0);
   };
 
+  const handleCellClick = () => { 
+    setIsTableVisible(false);
+  };  
+
   return (
     <Container>
       <Header user={user} signOut={signOut} />
@@ -195,6 +200,7 @@ export default function Home() {
         >
           Newly udpated job postings
         </Typography>
+        {isTableVisible ? (
         <TableContainer component={Paper}>
           <Table
             aria-label="custom pagination table"
@@ -228,17 +234,13 @@ export default function Home() {
                   <StyledTableCell>{row.platform}</StyledTableCell>
                   <StyledTableCell>{row.company}</StyledTableCell>
                   <StyledTableCell
-                    // onClick={() => window.open(row.url, "_blank")}
                     onClick={() => {
                       try {
                         throw new Error(
                           "Table cell click error for Datadog RUM test"
                         );
                       } catch (error) {
-                        console.error(error);
-                        alert(
-                          "An error occurred: Table cell click error for Datadog RUM test"
-                        );
+                        handleCellClick();
                       }
                     }}
                     style={{ cursor: "pointer" }}
@@ -269,7 +271,11 @@ export default function Home() {
               </TableRow>
             </TableFooter>
           </Table>
-        </TableContainer>
+        </TableContainer>) : (
+          <Typography>
+          Table is hidden. Refresh the page to see it again.
+        </Typography>
+        )}
       </Box>
     </Container>
   );
