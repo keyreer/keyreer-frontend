@@ -269,8 +269,8 @@ export default function Home() {
             </TableFooter>
           </Table>
         </TableContainer>) : (
-          <Typography>
-          Table is hidden. Refresh the page to see it again.
+          <Typography variant="h2">
+            Error!!
         </Typography>
         )}
       </Box>
